@@ -1,0 +1,162 @@
+===== Controller Generation Log - Sun Nov 17 07:19:19 CET 2024 =====
+Starting controller generation...
+Generated controller for entity 'AffectedProduct' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAffectedProductController.java'
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCountryController.java'
+Generated controller for entity 'RefreshToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRefreshTokenController.java'
+Generated controller for entity 'AttackPattern' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAttackPatternController.java'
+Generated controller for entity 'PasswordResetToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPasswordResetTokenController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoGlobalThreatController.java'
+Generated controller for entity 'Privilege' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPrivilegeController.java'
+Generated controller for entity 'Indicator' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIndicatorController.java'
+Generated controller for entity 'ThreatGroup' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatGroupController.java'
+Generated controller for entity 'TTP' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoTTPController.java'
+Generated controller for entity 'User' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoUserController.java'
+Generated controller for entity 'VerificationToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoVerificationTokenController.java'
+Warning: Could not determine ID type for entity 'AttackVector'. Skipping.
+Generated controller for entity 'Malware' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoMalwareController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatActorController.java'
+Generated controller for entity 'Role' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRoleController.java'
+Generated controller for entity 'Incident' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIncidentController.java'
+Warning: Could not determine ID type for entity 'Vulnerability'. Skipping.
+Generated controller for entity 'Report' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoReportController.java'
+Warning: Could not determine ID type for entity 'Geolocation'. Skipping.
+Generated controller for entity 'Campaign' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCampaignController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:20:36 CET 2024 =====
+Starting controller generation...
+Generated controller for entity 'AffectedProduct' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAffectedProductController.java'
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCountryController.java'
+Generated controller for entity 'RefreshToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRefreshTokenController.java'
+Generated controller for entity 'AttackPattern' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAttackPatternController.java'
+Generated controller for entity 'PasswordResetToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPasswordResetTokenController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoGlobalThreatController.java'
+Generated controller for entity 'Privilege' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPrivilegeController.java'
+Generated controller for entity 'Indicator' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIndicatorController.java'
+Generated controller for entity 'ThreatGroup' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatGroupController.java'
+Generated controller for entity 'TTP' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoTTPController.java'
+Generated controller for entity 'User' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoUserController.java'
+Generated controller for entity 'VerificationToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoVerificationTokenController.java'
+Warning: Could not determine ID type for entity 'AttackVector'. Skipping.
+Generated controller for entity 'Malware' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoMalwareController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatActorController.java'
+Generated controller for entity 'Role' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRoleController.java'
+Generated controller for entity 'Incident' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIncidentController.java'
+Warning: Could not determine ID type for entity 'Vulnerability'. Skipping.
+Generated controller for entity 'Report' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoReportController.java'
+Warning: Could not determine ID type for entity 'Geolocation'. Skipping.
+Generated controller for entity 'Campaign' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCampaignController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:21:21 CET 2024 =====
+Starting controller generation...
+Generated controller for entity 'AffectedProduct' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAffectedProductController.java'
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCountryController.java'
+Generated controller for entity 'RefreshToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRefreshTokenController.java'
+Generated controller for entity 'AttackPattern' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAttackPatternController.java'
+Generated controller for entity 'PasswordResetToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPasswordResetTokenController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoGlobalThreatController.java'
+Generated controller for entity 'Privilege' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPrivilegeController.java'
+Generated controller for entity 'Indicator' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIndicatorController.java'
+Generated controller for entity 'ThreatGroup' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatGroupController.java'
+Generated controller for entity 'TTP' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoTTPController.java'
+Generated controller for entity 'User' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoUserController.java'
+Generated controller for entity 'VerificationToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoVerificationTokenController.java'
+Warning: Could not determine ID type for entity 'AttackVector'. Skipping.
+Generated controller for entity 'Malware' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoMalwareController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatActorController.java'
+Generated controller for entity 'Role' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRoleController.java'
+Generated controller for entity 'Incident' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIncidentController.java'
+Warning: Could not determine ID type for entity 'Vulnerability'. Skipping.
+Generated controller for entity 'Report' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoReportController.java'
+Warning: Could not determine ID type for entity 'Geolocation'. Skipping.
+Generated controller for entity 'Campaign' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCampaignController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:23:02 CET 2024 =====
+Starting controller generation...
+Generated controller for entity 'AffectedProduct' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAffectedProductController.java'
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCountryController.java'
+Generated controller for entity 'RefreshToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRefreshTokenController.java'
+Generated controller for entity 'AttackPattern' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoAttackPatternController.java'
+Generated controller for entity 'PasswordResetToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPasswordResetTokenController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoGlobalThreatController.java'
+Generated controller for entity 'Privilege' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoPrivilegeController.java'
+Generated controller for entity 'Indicator' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIndicatorController.java'
+Generated controller for entity 'ThreatGroup' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatGroupController.java'
+Generated controller for entity 'TTP' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoTTPController.java'
+Generated controller for entity 'User' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoUserController.java'
+Generated controller for entity 'VerificationToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoVerificationTokenController.java'
+Warning: Could not determine ID type for entity 'AttackVector'. Skipping.
+Generated controller for entity 'Malware' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoMalwareController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoThreatActorController.java'
+Generated controller for entity 'Role' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoRoleController.java'
+Generated controller for entity 'Incident' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoIncidentController.java'
+Warning: Could not determine ID type for entity 'Vulnerability'. Skipping.
+Generated controller for entity 'Report' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoReportController.java'
+Warning: Could not determine ID type for entity 'Geolocation'. Skipping.
+Generated controller for entity 'Campaign' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/mongoCampaignController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:25:30 CET 2024 =====
+Starting controller generation...
+Generated controller for entity 'AffectedProduct' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoAffectedProductController.java'
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoCountryController.java'
+Generated controller for entity 'RefreshToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoRefreshTokenController.java'
+Generated controller for entity 'AttackPattern' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoAttackPatternController.java'
+Generated controller for entity 'PasswordResetToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoPasswordResetTokenController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoGlobalThreatController.java'
+Generated controller for entity 'Privilege' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoPrivilegeController.java'
+Generated controller for entity 'Indicator' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoIndicatorController.java'
+Generated controller for entity 'ThreatGroup' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoThreatGroupController.java'
+Generated controller for entity 'TTP' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoTTPController.java'
+Generated controller for entity 'User' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoUserController.java'
+Generated controller for entity 'VerificationToken' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoVerificationTokenController.java'
+Warning: Could not determine ID type for entity 'AttackVector'. Skipping.
+Generated controller for entity 'Malware' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoMalwareController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoThreatActorController.java'
+Generated controller for entity 'Role' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoRoleController.java'
+Generated controller for entity 'Incident' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoIncidentController.java'
+Warning: Could not determine ID type for entity 'Vulnerability'. Skipping.
+Generated controller for entity 'Report' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoReportController.java'
+Warning: Could not determine ID type for entity 'Geolocation'. Skipping.
+Generated controller for entity 'Campaign' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/MongoCampaignController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:26:29 CET 2024 =====
+Starting controller generation...
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:27:37 CET 2024 =====
+Starting controller generation...
+Warning: Could not determine ID type for entity 'AffectedProduct'. Skipping.
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jCountryController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jGlobalThreatController.java'
+Generated controller for entity 'ThreatActorType' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatActorTypeController.java'
+Generated controller for entity 'AttackVector' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jAttackVectorController.java'
+Generated controller for entity 'ThreatCategory' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatCategoryController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatActorController.java'
+Generated controller for entity 'Vulnerability' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jVulnerabilityController.java'
+Generated controller for entity 'Geolocation' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jGeolocationController.java'
+Generated controller for entity 'AttackVectorCategory' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jAttackVectorCategoryController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:28:21 CET 2024 =====
+Starting controller generation...
+Warning: Could not determine ID type for entity 'AffectedProduct'. Skipping.
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jCountryController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jGlobalThreatController.java'
+Generated controller for entity 'ThreatActorType' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatActorTypeController.java'
+Generated controller for entity 'AttackVector' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jAttackVectorController.java'
+Generated controller for entity 'ThreatCategory' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatCategoryController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatActorController.java'
+Generated controller for entity 'Vulnerability' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jVulnerabilityController.java'
+Generated controller for entity 'Geolocation' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jGeolocationController.java'
+Generated controller for entity 'AttackVectorCategory' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jAttackVectorCategoryController.java'
+Controller generation completed.
+===== Controller Generation Log - Sun Nov 17 07:29:33 CET 2024 =====
+Starting controller generation...
+Warning: Could not determine ID type for entity 'AffectedProduct'. Skipping.
+Generated controller for entity 'Country' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jCountryController.java'
+Generated controller for entity 'GlobalThreat' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jGlobalThreatController.java'
+Generated controller for entity 'ThreatActorType' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatActorTypeController.java'
+Generated controller for entity 'AttackVector' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jAttackVectorController.java'
+Generated controller for entity 'ThreatCategory' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatCategoryController.java'
+Generated controller for entity 'ThreatActor' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jThreatActorController.java'
+Generated controller for entity 'Vulnerability' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jVulnerabilityController.java'
+Generated controller for entity 'Geolocation' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jGeolocationController.java'
+Generated controller for entity 'AttackVectorCategory' at '/Users/simonbeckmann/IdeaProjects/compliMySQL/src/main/java/orsk/compli/controller/neo4jAttackVectorCategoryController.java'
+Controller generation completed.
