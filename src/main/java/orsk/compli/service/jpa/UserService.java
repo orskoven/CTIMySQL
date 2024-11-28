@@ -10,7 +10,7 @@ import orsk.compli.repository.jpa.UserJpaRepository;
 
 import java.util.Collections;
 
-@Service("jpaUserService")
+@Service()
 public class UserService {
 
     @Autowired
