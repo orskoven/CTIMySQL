@@ -1,5 +1,7 @@
+// File: SecurityConfig.java
 package orsk.compli.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import orsk.compli.service.jpa.CustomUserDetailsJpaService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,14 +32,21 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final JwtTokenProvider tokenProvider;
+    private final CustomUserDetailsJpaService customUserDetailsService;
 
-    public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler) {
+    @Autowired
+    public SecurityConfig(JwtAuthenticationEntryPoint unauthorizedHandler,
+                          JwtTokenProvider tokenProvider,
+                          CustomUserDetailsJpaService customUserDetailsService) {
         this.unauthorizedHandler = unauthorizedHandler;
+        this.tokenProvider = tokenProvider;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        return new JwtAuthenticationFilter(tokenProvider, customUserDetailsService);
     }
 
     @Bean

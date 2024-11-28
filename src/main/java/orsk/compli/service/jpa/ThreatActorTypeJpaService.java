@@ -8,7 +8,7 @@ import orsk.compli.repository.jpa.ThreatActorTypeJpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-@Service("jpaThreatActorTypeService")
+@Service()
 public class ThreatActorTypeJpaService implements CrudService<JpaThreatActorType, Long> {
 
     private final ThreatActorTypeJpaRepository threatActorTypeServiceRepository;

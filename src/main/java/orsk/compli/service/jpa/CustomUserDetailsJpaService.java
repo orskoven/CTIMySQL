@@ -1,5 +1,6 @@
 package orsk.compli.service.jpa;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,8 @@ public class CustomUserDetailsJpaService implements UserDetailsService {
     private UserJpaRepository userRepository;
 
     @Override
+    //transactional to By annotating the loadUserByUsername method with @Transactional, you ensure that the Hibernate session remains open for the duration of the method execution, allowing lazy loading to occur seamlessly.
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(usernameOrEmail)
                 .or(() -> userRepository.findByEmail(usernameOrEmail))

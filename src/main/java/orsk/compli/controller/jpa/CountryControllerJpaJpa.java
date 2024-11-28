@@ -15,7 +15,7 @@ import orsk.compli.service.jpa.CountryJpaService;
 
 import java.util.List;
 
-@RestController("jpaCountryController")
+@RestController
 @RequestMapping("/api/mysql/countries")
 
 

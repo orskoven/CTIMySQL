@@ -1,10 +1,11 @@
+// File: AuthService.java
 package orsk.compli.service.jpa;
 
-import org.hibernate.event.service.spi.EventListenerRegistrationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 
-@Service("jpaAuthService")
+@Service
 public class AuthService {
 
     @Autowired
@@ -51,40 +52,40 @@ public class AuthService {
     @Autowired
     private RefreshTokenJpaService refreshTokenService;
 
-
-
     @Transactional
     public void registerUser(RegistrationRequest registrationRequest) {
+        String email= registrationRequest.getEmail();
+
         if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
-            System.out.println("Username taken");
+            throw new RuntimeException("Username already exists");
         }
-        if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
-            System.out.println("Email already exists");
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("Email already exists");
         }
+
 
         try {
             User user = new User();
             user.setUsername(registrationRequest.getUsername());
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
             user.setEmail(registrationRequest.getEmail());
+
             user.setConsentToDataUsage(registrationRequest.getConsentToDataUsage());
-            user.setEnabled(false); // User needs to verify email
 
             // Assign ROLE_USER
             user.setRoles(Set.of(roleRepository.findByName("ROLE_USER")
-                    .orElseThrow(() -> new RoleNotFoundException("ROLE_USER not found"))));
+                    .orElseThrow(() -> new RoleNotFoundException("Default role 'ROLE_USER' not found"))));
 
             userRepository.save(user);
 
             // Generate verification token
             String token = generateVerificationToken(user);
 
-            // Send verification email
-            //emailService.sendVerificationEmail(user.getEmail(), token);
-
+            // Send verification email (external implementation)
+            // emailService.sendVerificationEmail(registrationRequest.getEmail(), token);
         } catch (Exception e) {
-            // Log error and handle exception
-            throw new EventListenerRegistrationException("Registration failed due to an unexpected error");
+            throw new RuntimeException("Registration failed due to an unexpected error", e);
         }
     }
 
@@ -97,25 +98,40 @@ public class AuthService {
                 )
         );
 
-        String jwt = tokenProvider.generateToken(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        String jwt = tokenProvider.generateAccessToken(authentication);
+
+        // Generate and save refresh token
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(authentication.getName());
 
-        return new JwtAuthenticationResponse(jwt, refreshToken.getToken());
+        return new JwtAuthenticationResponse(jwt, refreshToken.getToken(), "Bearer");
+    }
+
+
+    private boolean isValidEmail(String email) {
+        return email.contains("@");
     }
 
     @Transactional
     public JwtAuthenticationResponse refreshToken(TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
-        return refreshTokenService.findByToken(requestRefreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = tokenProvider.generateTokenFromUsername(user.getUsername());
-                    return new JwtAuthenticationResponse(token, requestRefreshToken);
-                })
+        RefreshToken refreshToken = refreshTokenService.findByToken(requestRefreshToken)
                 .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+
+        refreshTokenService.verifyExpiration(refreshToken);
+
+        User user = refreshToken.getUser();
+        String token = tokenProvider.generateRefreshToken(user.getUsername());
+
+        // Optionally, generate a new refresh token
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+
+        // Delete the old refresh token
+        refreshTokenService.deleteByToken(requestRefreshToken);
+
+        return new JwtAuthenticationResponse(token, newRefreshToken.getToken(), "Bearer");
     }
 
     @Transactional
@@ -125,7 +141,8 @@ public class AuthService {
 
     @Transactional
     public void initiatePasswordReset(PasswordResetRequest passwordResetRequest) {
-        User user = userRepository.findByEmail(passwordResetRequest.getEmail())
+        String email = passwordResetRequest.getEmail();
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email not found"));
 
         String token = UUID.randomUUID().toString();
@@ -136,7 +153,10 @@ public class AuthService {
 
         passwordResetTokenRepository.save(passwordResetToken);
 
-      }
+        // Send password reset email (external implementation)
+        // emailService.sendPasswordResetEmail(passwordResetRequest.getEmail(), token);
+    }
+
 
     @Transactional
     public void changePassword(PasswordChangeRequest passwordChangeRequest) {
@@ -151,7 +171,6 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
 
         userRepository.save(user);
-
         passwordResetTokenRepository.delete(passwordResetToken);
     }
 
@@ -164,7 +183,6 @@ public class AuthService {
         user.setEnabled(true);
 
         userRepository.save(user);
-
         verificationTokenRepository.delete(verificationToken);
     }
 
