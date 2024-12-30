@@ -3,15 +3,14 @@ package orsk.compli.controller.jpa;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import orsk.compli.entities.jpa.JpaGeolocation;
+import orsk.compli.entities.Geolocation;
 import orsk.compli.service.jpa.GeolocationJpaService;
 
 @RestController("jpaGeolocationController")
 @RequestMapping("/api/mysql/geolocations")
-@CrossOrigin(origins = {"http://localhost:5173"})
 
 
-public class GeolocationControllerJpaJpa extends AbstractCrudControllerJpa<JpaGeolocation, Long> {
+public class GeolocationControllerJpaJpa extends AbstractCrudControllerJpa<Geolocation, Long> {
 
     private final GeolocationJpaService geolocationService;
 

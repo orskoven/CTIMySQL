@@ -1,89 +1,78 @@
+
 package orsk.compli.service.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import orsk.compli.entities.jpa.JpaGlobalThreat;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.GlobalThreat;
+import orsk.compli.exception.EntityNotFoundException;
 import orsk.compli.repository.jpa.GlobalThreatJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Service class for managing JpaGlobalThreat entities.
- */
 @Service("jpaGlobalThreatService")
-public class GlobalThreatJpaService implements CrudService<JpaGlobalThreat, Long> {
+public class GlobalThreatJpaService implements CrudService<GlobalThreat, Long> {
 
-    private final GlobalThreatJpaRepository globalThreatJpaRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalThreatJpaService.class);
+
+    private final GlobalThreatJpaRepository globalThreatRepository;
 
     @Autowired
-    public GlobalThreatJpaService(GlobalThreatJpaRepository globalThreatJpaRepository) {
-        this.globalThreatJpaRepository = globalThreatJpaRepository;
+    public GlobalThreatJpaService(GlobalThreatJpaRepository globalThreatRepository) {
+        this.globalThreatRepository = globalThreatRepository;
     }
 
-    /**
-     * Creates a new JpaGlobalThreat entity.
-     *
-     * @param entity the entity to create
-     * @return the created entity
-     */
     @Override
-    public JpaGlobalThreat create(JpaGlobalThreat entity) {
-        return globalThreatJpaRepository.save(entity);
+    @Transactional
+    public GlobalThreat create(GlobalThreat entity) {
+        LOGGER.info("Creating Global Threat: {}", entity);
+        return globalThreatRepository.save(entity);
     }
 
-    /**
-     * Retrieves all JpaGlobalThreat entities.
-     *
-     * @return a list of all entities
-     */
     @Override
-    public List<JpaGlobalThreat> getAll() {
-        return globalThreatJpaRepository.findAll();
+    public List<GlobalThreat> createBatch(List<GlobalThreat> entities) {
+        return List.of();
     }
 
-    /**
-     * Retrieves a JpaGlobalThreat entity by its ID.
-     *
-     * @param id the ID of the entity
-     * @return an Optional containing the entity if found, or empty otherwise
-     */
     @Override
-    public Optional<JpaGlobalThreat> getById(Long id) {
-        return globalThreatJpaRepository.findById(id);
+    public List<GlobalThreat> getAll() {
+        LOGGER.info("Retrieving all Global Threats");
+        return globalThreatRepository.findAll();
     }
 
-    /**
-     * Updates an existing JpaGlobalThreat entity.
-     *
-     * @param id     the ID of the entity to update
-     * @param entity the entity with updated values
-     * @return the updated entity
-     * @throws RuntimeException if the entity with the given ID is not found
-     */
     @Override
-    public JpaGlobalThreat update(Long id, JpaGlobalThreat entity) {
-        // Update fields of existingEntity with values from entity
-        //existingEntity.setField1(entity.getField1());
-        //existingEntity.setField2(entity.getField2());
-        // Add more field mappings as necessary
-        return globalThreatJpaRepository.findById(id)
-                .map(globalThreatJpaRepository::save)
-                .orElseThrow(() -> new RuntimeException("Entity not found with id " + id));
+    public Optional<GlobalThreat> getById(Long id) {
+        LOGGER.info("Retrieving Global Threat with ID: {}", id);
+        return globalThreatRepository.findById(id);
     }
 
-    /**
-     * Deletes a JpaGlobalThreat entity by its ID.
-     *
-     * @param id the ID of the entity to delete
-     * @return true if the entity was deleted, false otherwise
-     */
     @Override
+    @Transactional
+    public GlobalThreat update(Long id, GlobalThreat entity) {
+        LOGGER.info("Updating Global Threat with ID: {}", id);
+        return globalThreatRepository.findById(id)
+                .map(existing -> {
+                    existing.setName(entity.getName());
+                    existing.setDescription(entity.getDescription());
+                    // Add other field mappings as necessary
+                    return globalThreatRepository.save(existing);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Global Threat not found with id " + id));
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
-        if (globalThreatJpaRepository.existsById(id)) {
-            globalThreatJpaRepository.deleteById(id);
+        LOGGER.info("Deleting Global Threat with ID: {}", id);
+        if (globalThreatRepository.existsById(id)) {
+            globalThreatRepository.deleteById(id);
             return true;
         }
+        LOGGER.warn("Global Threat with ID: {} not found for deletion", id);
         return false;
     }
 }
+

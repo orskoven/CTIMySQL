@@ -1,56 +1,78 @@
+
 package orsk.compli.service.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import orsk.compli.entities.jpa.JpaThreatActorType;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.ThreatActorType;
+import orsk.compli.exception.EntityNotFoundException;
 import orsk.compli.repository.jpa.ThreatActorTypeJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("jpaThreatActorTypeService")
-public class ThreatActorTypeJpaService implements CrudService<JpaThreatActorType, Long> {
+public class ThreatActorTypeJpaService implements CrudService<ThreatActorType, Long> {
 
-    private final ThreatActorTypeJpaRepository threatActorTypeServiceRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThreatActorTypeJpaService.class);
+
+    private final ThreatActorTypeJpaRepository threatActorTypeRepository;
 
     @Autowired
-    public ThreatActorTypeJpaService(ThreatActorTypeJpaRepository threatActorTypeServiceRepository) {
-        this.threatActorTypeServiceRepository = threatActorTypeServiceRepository;
+    public ThreatActorTypeJpaService(ThreatActorTypeJpaRepository threatActorTypeRepository) {
+        this.threatActorTypeRepository = threatActorTypeRepository;
     }
 
     @Override
-    public JpaThreatActorType create(JpaThreatActorType entity) {
-        return threatActorTypeServiceRepository.save(entity);
+    @Transactional
+    public ThreatActorType create(ThreatActorType entity) {
+        LOGGER.info("Creating Threat Actor Type: {}", entity);
+        return threatActorTypeRepository.save(entity);
     }
 
     @Override
-    public List<JpaThreatActorType> getAll() {
-        return threatActorTypeServiceRepository.findAll();
+    public List<ThreatActorType> createBatch(List<ThreatActorType> entities) {
+        return List.of();
     }
 
     @Override
-    public Optional<JpaThreatActorType> getById(Long id) {
-        return threatActorTypeServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    public List<ThreatActorType> getAll() {
+        LOGGER.info("Retrieving all Threat Actor Types");
+        return threatActorTypeRepository.findAll();
     }
 
     @Override
-    public JpaThreatActorType update(Long id, JpaThreatActorType entity) {
-        Optional<JpaThreatActorType> optionalEntity = threatActorTypeServiceRepository.findById(Long.valueOf(String.valueOf(id)));
-        if (optionalEntity.isPresent()) {
-            JpaThreatActorType existingEntity = optionalEntity.get();
-            // TODO: Update fields of existingEntity with values from entity
-            return threatActorTypeServiceRepository.save(existingEntity);
-        } else {
-            throw new RuntimeException("Entity not found with id " + id);
-        }
+    public Optional<ThreatActorType> getById(Long id) {
+        LOGGER.info("Retrieving Threat Actor Type with ID: {}", id);
+        return threatActorTypeRepository.findById(id);
     }
 
     @Override
+    @Transactional
+    public ThreatActorType update(Long id, ThreatActorType entity) {
+        LOGGER.info("Updating Threat Actor Type with ID: {}", id);
+        return threatActorTypeRepository.findById(id)
+                .map(existing -> {
+                    existing.setTypeName(entity.getTypeName());
+                    existing.setDescription(entity.getDescription());
+                    // Add other field mappings as necessary
+                    return threatActorTypeRepository.save(existing);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Threat Actor Type not found with id " + id));
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
-        if (threatActorTypeServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
-            threatActorTypeServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+        LOGGER.info("Deleting Threat Actor Type with ID: {}", id);
+        if (threatActorTypeRepository.existsById(id)) {
+            threatActorTypeRepository.deleteById(id);
             return true;
         }
+        LOGGER.warn("Threat Actor Type with ID: {} not found for deletion", id);
         return false;
     }
 }
+

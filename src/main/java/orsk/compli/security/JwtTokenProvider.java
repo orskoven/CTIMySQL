@@ -25,11 +25,11 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void init() {
-        // Generate a secure key for HS512 using the configured jwtSecret as a seed
-        if (jwtSecret != null && jwtSecret.length() >= 64) { // Make sure jwtSecret has sufficient length
+        // Generate a secure key for HS512 using the configured jwtSecret
+        if (jwtSecret != null && jwtSecret.length() >= 64) { // Ensure sufficient length for HS512
             key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         } else {
-            key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+            throw new IllegalArgumentException("JWT secret key must be at least 64 characters long");
         }
     }
 
@@ -76,7 +76,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(authToken);
             return true;
         } catch (Exception ex) {
-            // Handle token validation exceptions
+            // Log the exception or handle it as needed
         }
         return false;
     }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import orsk.compli.entities.jpa.JpaCountry;
+import orsk.compli.entities.Country;
 import orsk.compli.service.jpa.CountryJpaService;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/mysql/countries")
 
 
-public class CountryControllerJpaJpa extends AbstractCrudControllerJpa<JpaCountry, Long> {
+public class CountryControllerJpaJpa extends AbstractCrudControllerJpa<Country, Long> {
 
     private static final Logger logger = LoggerFactory.getLogger(CountryControllerJpaJpa.class);
     private final CountryJpaService countryService;
@@ -35,9 +35,9 @@ public class CountryControllerJpaJpa extends AbstractCrudControllerJpa<JpaCountr
 
     // Batch create endpoint
     @PostMapping("/batch")
-    public ResponseEntity<List<JpaCountry>> createBatch(@RequestBody List<JpaCountry> countries) {
+    public ResponseEntity<List<Country>> createBatch(@RequestBody List<Country> countries) {
         try {
-            List<JpaCountry> createdCountries = countryService.createAll(countries);
+            List<Country> createdCountries = countryService.createAll(countries);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdCountries);
         } catch (DataAccessException e) {
             logger.error("Error creating countries: {}", e.getMessage());

@@ -1,0 +1,1076 @@
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//VulnerabilityJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.Vulnerability;
+import orsk.compli.repository.jpa.VulnerabilityJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaVulnerabilityService")
+public class VulnerabilityJpaService implements CrudService<JpaVulnerability, Long> {
+
+    private final VulnerabilityJpaRepository vulnerabilityServiceRepository;
+
+    @Autowired
+    public VulnerabilityJpaService(VulnerabilityJpaRepository vulnerabilityServiceRepository) {
+        this.vulnerabilityServiceRepository = vulnerabilityServiceRepository;
+    }
+
+    @Override
+    public JpaVulnerability create(JpaVulnerability entity) {
+        return vulnerabilityServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaVulnerability> getAll() {
+        return vulnerabilityServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaVulnerability> getById(Long id) {
+        return vulnerabilityServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaVulnerability update(Long id, JpaVulnerability entity) {
+        Optional<JpaVulnerability> optionalEntity = vulnerabilityServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaVulnerability existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return vulnerabilityServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (vulnerabilityServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            vulnerabilityServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//CountryJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.jpa.Country;
+import orsk.compli.repository.jpa.CountryJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaCountryService")
+
+public class CountryJpaService implements CrudService<JpaCountry, Long> {
+
+    private final CountryJpaRepository countryRepository;
+
+    @Autowired
+    public CountryJpaService(CountryJpaRepository countryRepository) {
+        this.countryRepository = countryRepository;
+    }
+
+    @Override
+    public JpaCountry create(JpaCountry entity) {
+        return countryRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaCountry> getAll() {
+        return countryRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaCountry> getById(Long id) {
+        return countryRepository.findById(id);
+    }
+
+    @Override
+    public JpaCountry update(Long id, JpaCountry entity) {
+        return countryRepository.findById(id).map(existingEntity -> {
+            // Copy fields from the input entity to the existing entity
+            existingEntity.setCountryCode(entity.getCountryCode());
+            existingEntity.setCountryCode(entity.getCountryCode());
+            //     existingEntity.setThreatActors(entity.getThreatActors());
+            //     existingEntity.setGeolocations(entity.getGeolocations());
+            return countryRepository.save(existingEntity);
+        }).orElseThrow(() -> new RuntimeException("Entity not found with id " + id));
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (countryRepository.existsById(id)) {
+            countryRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    // Batch creation of countries
+    @Transactional
+    public List<JpaCountry> createAll(List<JpaCountry> countries) {
+        try {
+            return countryRepository.saveAll(countries);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error creating countries", e);
+        }
+    }
+}
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//GlobalThreatJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.GlobalThreat;
+import orsk.compli.repository.jpa.GlobalThreatJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Service class for managing JpaGlobalThreat entities.
+ */
+@Service("jpaGlobalThreatService")
+public class GlobalThreatJpaService implements CrudService<JpaGlobalThreat, Long> {
+
+    private final GlobalThreatJpaRepository globalThreatJpaRepository;
+
+    @Autowired
+    public GlobalThreatJpaService(GlobalThreatJpaRepository globalThreatJpaRepository) {
+        this.globalThreatJpaRepository = globalThreatJpaRepository;
+    }
+
+    /**
+     * Creates a new JpaGlobalThreat entity.
+     *
+     * @param entity the entity to create
+     * @return the created entity
+     */
+    @Override
+    public JpaGlobalThreat create(JpaGlobalThreat entity) {
+        return globalThreatJpaRepository.save(entity);
+    }
+
+    /**
+     * Retrieves all JpaGlobalThreat entities.
+     *
+     * @return a list of all entities
+     */
+    @Override
+    public List<JpaGlobalThreat> getAll() {
+        return globalThreatJpaRepository.findAll();
+    }
+
+    /**
+     * Retrieves a JpaGlobalThreat entity by its ID.
+     *
+     * @param id the ID of the entity
+     * @return an Optional containing the entity if found, or empty otherwise
+     */
+    @Override
+    public Optional<JpaGlobalThreat> getById(Long id) {
+        return globalThreatJpaRepository.findById(id);
+    }
+
+    /**
+     * Updates an existing JpaGlobalThreat entity.
+     *
+     * @param id     the ID of the entity to update
+     * @param entity the entity with updated values
+     * @return the updated entity
+     * @throws RuntimeException if the entity with the given ID is not found
+     */
+    @Override
+    public JpaGlobalThreat update(Long id, JpaGlobalThreat entity) {
+        // Update fields of existingEntity with values from entity
+        //existingEntity.setField1(entity.getField1());
+        //existingEntity.setField2(entity.getField2());
+        // Add more field mappings as necessary
+        return globalThreatJpaRepository.findById(id)
+                .map(globalThreatJpaRepository::save)
+                .orElseThrow(() -> new RuntimeException("Entity not found with id " + id));
+    }
+
+    /**
+     * Deletes a JpaGlobalThreat entity by its ID.
+     *
+     * @param id the ID of the entity to delete
+     * @return true if the entity was deleted, false otherwise
+     */
+    @Override
+    public boolean delete(Long id) {
+        if (globalThreatJpaRepository.existsById(id)) {
+            globalThreatJpaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//ThreatActorTypeJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.ThreatActorType;
+import orsk.compli.repository.jpa.ThreatActorTypeJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaThreatActorTypeService")
+public class ThreatActorTypeJpaService implements CrudService<JpaThreatActorType, Long> {
+
+    private final ThreatActorTypeJpaRepository threatActorTypeServiceRepository;
+
+    @Autowired
+    public ThreatActorTypeJpaService(ThreatActorTypeJpaRepository threatActorTypeServiceRepository) {
+        this.threatActorTypeServiceRepository = threatActorTypeServiceRepository;
+    }
+
+    @Override
+    public JpaThreatActorType create(JpaThreatActorType entity) {
+        return threatActorTypeServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaThreatActorType> getAll() {
+        return threatActorTypeServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaThreatActorType> getById(Long id) {
+        return threatActorTypeServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaThreatActorType update(Long id, JpaThreatActorType entity) {
+        Optional<JpaThreatActorType> optionalEntity = threatActorTypeServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaThreatActorType existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return threatActorTypeServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (threatActorTypeServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            threatActorTypeServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//UserService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.Role;
+import orsk.compli.entities.jpa.User;
+import orsk.compli.repository.jpa.RoleJpaRepository;
+import orsk.compli.repository.jpa.UserJpaRepository;
+
+import java.util.Collections;
+
+@Service("jpaUserService")
+public class UserService {
+
+    @Autowired
+    private UserJpaRepository userRepository;
+
+    @Autowired
+    private RoleJpaRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User registerNewUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(false); // User needs to be enabled after registration or email verification
+        JpaRole userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found"));
+        user.setRoles(Collections.singleton(userRole));
+        return userRepository.save(user);
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//GeolocationJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.Geolocation;
+import orsk.compli.repository.jpa.GeolocationJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaGeolocationService")
+public class GeolocationJpaService implements CrudService<JpaGeolocation, Long> {
+
+    private final GeolocationJpaRepository geolocationServiceRepository;
+
+    @Autowired
+    public GeolocationJpaService(GeolocationJpaRepository geolocationServiceRepository) {
+        this.geolocationServiceRepository = geolocationServiceRepository;
+    }
+
+    @Override
+    public JpaGeolocation create(JpaGeolocation entity) {
+        return geolocationServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaGeolocation> getAll() {
+        return geolocationServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaGeolocation> getById(Long id) {
+        return geolocationServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaGeolocation update(Long id, JpaGeolocation entity) {
+        Optional<JpaGeolocation> optionalEntity = geolocationServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaGeolocation existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return geolocationServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (geolocationServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            geolocationServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AttackVectorJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.AttackVector;
+import orsk.compli.repository.jpa.AttackVectorJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaAttackVectorService")
+public class AttackVectorJpaService implements CrudService<JpaAttackVector, Long> {
+
+    private final AttackVectorJpaRepository attackVectorServiceRepository;
+
+    @Autowired
+    public AttackVectorJpaService(AttackVectorJpaRepository attackVectorServiceRepository) {
+        this.attackVectorServiceRepository = attackVectorServiceRepository;
+    }
+
+    @Override
+    public JpaAttackVector create(JpaAttackVector entity) {
+        return attackVectorServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaAttackVector> getAll() {
+        return attackVectorServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaAttackVector> getById(Long id) {
+        return attackVectorServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaAttackVector update(Long id, JpaAttackVector entity) {
+        Optional<JpaAttackVector> optionalEntity = attackVectorServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaAttackVector existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return attackVectorServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (attackVectorServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            attackVectorServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//CustomUserDetailsJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.User;
+import orsk.compli.repository.jpa.UserJpaRepository;
+
+import java.util.stream.Collectors;
+
+@Service("jpaCustomUserDetailsService")
+public class CustomUserDetailsJpaService implements UserDetailsService {
+
+    @Autowired
+    private UserJpaRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(usernameOrEmail)
+                .or(() -> userRepository.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                user.getEnabled(),
+                true,
+                true,
+                true,
+                user.getRoles().stream()
+                        .flatMap(role -> role.getPrivileges().stream())
+                        .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
+                        .collect(Collectors.toList()));
+    }
+
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AffectedProductJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.AffectedProduct;
+import orsk.compli.repository.jpa.AffectedProductJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaAffectedProductService")
+public class AffectedProductJpaService implements CrudService<JpaAffectedProduct, Long> {
+
+    private final AffectedProductJpaRepository affectedProductServiceRepository;
+
+    @Autowired
+    public AffectedProductJpaService(AffectedProductJpaRepository affectedProductServiceRepository) {
+        this.affectedProductServiceRepository = affectedProductServiceRepository;
+    }
+
+    @Override
+    public JpaAffectedProduct create(JpaAffectedProduct entity) {
+        return affectedProductServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaAffectedProduct> getAll() {
+        return affectedProductServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaAffectedProduct> getById(Long id) {
+        return affectedProductServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaAffectedProduct update(Long id, JpaAffectedProduct entity) {
+        Optional<JpaAffectedProduct> optionalEntity = affectedProductServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaAffectedProduct existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return affectedProductServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (affectedProductServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            affectedProductServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AuthService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.hibernate.event.service.spi.EventListenerRegistrationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.dtos.*;
+import orsk.compli.entities.jpa.PasswordResetToken;
+import orsk.compli.entities.jpa.RefreshToken;
+import orsk.compli.entities.jpa.User;
+import orsk.compli.entities.jpa.VerificationToken;
+import orsk.compli.repository.jpa.PasswordResetTokenJpaRepository;
+import orsk.compli.repository.jpa.RoleJpaRepository;
+import orsk.compli.repository.jpa.UserJpaRepository;
+import orsk.compli.repository.jpa.VerificationTokenJpaRepository;
+import orsk.compli.security.JwtTokenProvider;
+
+import javax.management.relation.RoleNotFoundException;
+import java.time.Instant;
+import java.util.Set;
+import java.util.UUID;
+
+@Service("jpaAuthService")
+public class AuthService {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserJpaRepository userRepository;
+
+    @Autowired
+    private RoleJpaRepository roleRepository;
+
+    @Autowired
+    private VerificationTokenJpaRepository verificationTokenRepository;
+
+    @Autowired
+    private PasswordResetTokenJpaRepository passwordResetTokenRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private RefreshTokenJpaService refreshTokenService;
+
+
+
+    @Transactional
+    public void registerUser(RegistrationRequest registrationRequest) {
+        if (userRepository.findByUsername(registrationRequest.getUsername()).isPresent()) {
+            System.out.println("Username taken");
+        }
+        if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
+            System.out.println("Email already exists");
+        }
+
+        try {
+            User user = new User();
+            user.setUsername(registrationRequest.getUsername());
+            user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+            user.setEmail(registrationRequest.getEmail());
+            user.setConsentToDataUsage(registrationRequest.getConsentToDataUsage());
+            user.setEnabled(false); // User needs to verify email
+
+            // Assign ROLE_USER
+            user.setRoles(Set.of(roleRepository.findByName("ROLE_USER")
+                    .orElseThrow(() -> new RoleNotFoundException("ROLE_USER not found"))));
+
+            userRepository.save(user);
+
+            // Generate verification token
+            String token = generateVerificationToken(user);
+
+            // Send verification email
+            //emailService.sendVerificationEmail(user.getEmail(), token);
+
+        } catch (Exception e) {
+            // Log error and handle exception
+            throw new EventListenerRegistrationException("Registration failed due to an unexpected error");
+        }
+    }
+
+    @Transactional
+    public JwtAuthenticationResponse authenticateUser(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+
+        String jwt = tokenProvider.generateToken(authentication);
+
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(authentication.getName());
+
+        return new JwtAuthenticationResponse(jwt, refreshToken.getToken());
+    }
+
+    @Transactional
+    public JwtAuthenticationResponse refreshToken(TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = tokenProvider.generateTokenFromUsername(user.getUsername());
+                    return new JwtAuthenticationResponse(token, requestRefreshToken);
+                })
+                .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+    }
+
+    @Transactional
+    public void logoutUser(LogoutRequest logoutRequest) {
+        refreshTokenService.deleteByToken(logoutRequest.getRefreshToken());
+    }
+
+    @Transactional
+    public void initiatePasswordReset(PasswordResetRequest passwordResetRequest) {
+        User user = userRepository.findByEmail(passwordResetRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email not found"));
+
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+        passwordResetToken.setToken(token);
+        passwordResetToken.setUser(user);
+        passwordResetToken.setExpiryDate(Instant.now().plusSeconds(3600)); // 1 hour expiry
+
+        passwordResetTokenRepository.save(passwordResetToken);
+
+      }
+
+    @Transactional
+    public void changePassword(PasswordChangeRequest passwordChangeRequest) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(passwordChangeRequest.getToken())
+                .orElseThrow(() -> new RuntimeException("Invalid password reset token"));
+
+        if (passwordResetToken.getExpiryDate().isBefore(Instant.now())) {
+            throw new RuntimeException("Password reset token expired");
+        }
+
+        User user = passwordResetToken.getUser();
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(passwordResetToken);
+    }
+
+    @Transactional
+    public void verifyEmail(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid verification token"));
+
+        User user = verificationToken.getUser();
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+        verificationTokenRepository.delete(verificationToken);
+    }
+
+    private String generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setUser(user);
+        verificationToken.setExpiryDate(Instant.now().plusSeconds(86400)); // 24 hours expiry
+
+        verificationTokenRepository.save(verificationToken);
+
+        return token;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//ThreatCategoryJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.ThreatCategory;
+import orsk.compli.repository.jpa.ThreatCategoryJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaThreatCategoryService")
+public class ThreatCategoryJpaService implements CrudService<JpaThreatCategory, Long> {
+
+    private final ThreatCategoryJpaRepository threatCategoryServiceRepository;
+
+    @Autowired
+    public ThreatCategoryJpaService(ThreatCategoryJpaRepository threatCategoryServiceRepository) {
+        this.threatCategoryServiceRepository = threatCategoryServiceRepository;
+    }
+
+    @Override
+    public JpaThreatCategory create(JpaThreatCategory entity) {
+        return threatCategoryServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaThreatCategory> getAll() {
+        return threatCategoryServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaThreatCategory> getById(Long id) {
+        return threatCategoryServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaThreatCategory update(Long id, JpaThreatCategory entity) {
+        Optional<JpaThreatCategory> optionalEntity = threatCategoryServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaThreatCategory existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return threatCategoryServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (threatCategoryServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            threatCategoryServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//RefreshTokenJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.jpa.RefreshToken;
+import orsk.compli.entities.jpa.User;
+import orsk.compli.repository.jpa.RefreshTokenJpaRepository;
+import orsk.compli.repository.jpa.UserJpaRepository;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service("jpaRefreshTokenService")
+public class RefreshTokenJpaService {
+
+    @Autowired
+    private RefreshTokenJpaRepository refreshTokenRepository;
+
+    @Autowired
+    private UserJpaRepository userRepository;
+
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
+    }
+
+    public RefreshToken createRefreshToken(String username) {
+        RefreshToken refreshToken = new RefreshToken();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        refreshToken.setUser(user);
+        refreshToken.setExpiryDate(Instant.now().plusSeconds(604800)); // 7 days
+        refreshToken.setToken(UUID.randomUUID().toString());
+
+        return refreshTokenRepository.save(refreshToken);
+    }
+
+    public RefreshToken verifyExpiration(RefreshToken token) {
+        if (token.getExpiryDate().isBefore(Instant.now())) {
+            refreshTokenRepository.delete(token);
+            throw new RuntimeException("Refresh token expired");
+        }
+
+        return token;
+    }
+
+    @Transactional
+    public int deleteByUserId(Long userId) {
+        return refreshTokenRepository.deleteByUser(userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found")));
+    }
+
+    @Transactional
+    public void deleteByToken(String token) {
+        refreshTokenRepository.findByToken(token).ifPresent(refreshTokenRepository::delete);
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//SearchService.java
+==============================
+// File: src/main/java/orsk/compli/service/SearchService.java
+
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.repository.jpa.AffectedProductJpaRepository;
+import orsk.compli.repository.jpa.CountryJpaRepository;
+import orsk.compli.repository.jpa.GlobalThreatJpaRepository;
+
+import java.util.List;
+
+@Service("jpaSearchService")
+public class SearchService {
+
+    private final AffectedProductJpaRepository affectedProductRepository;
+    private final CountryJpaRepository countryRepository;
+    private final GlobalThreatJpaRepository globalThreatRepository;
+
+    @Autowired
+    public SearchService(AffectedProductJpaRepository affectedProductRepository,
+                         CountryJpaRepository countryRepository,
+                         GlobalThreatJpaRepository globalThreatRepository) {
+        this.affectedProductRepository = affectedProductRepository;
+        this.countryRepository = countryRepository;
+        this.globalThreatRepository = globalThreatRepository;
+    }
+
+    public List<String> getAffectedProductNames() {
+        return affectedProductRepository.findAllProductNames();
+    }
+
+    public List<String> getCountryNames() {
+        return countryRepository.findAllCountryNames();
+    }
+
+    public List<String> getGlobalThreatNames() {
+        return globalThreatRepository.findAllThreatNames();
+    }
+
+    // Add more methods as needed
+}
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AttackVectorCategoryJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.AttackVectorCategory;
+import orsk.compli.repository.jpa.AttackVectorCategoryJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaAttackVectorCategoryService")
+public class AttackVectorCategoryJpaService implements CrudService<JpaAttackVectorCategory, Long> {
+
+    private final AttackVectorCategoryJpaRepository attackVectorCategoryServiceRepository;
+
+    @Autowired
+    public AttackVectorCategoryJpaService(AttackVectorCategoryJpaRepository attackVectorCategoryServiceRepository) {
+        this.attackVectorCategoryServiceRepository = attackVectorCategoryServiceRepository;
+    }
+
+    @Override
+    public JpaAttackVectorCategory create(JpaAttackVectorCategory entity) {
+        return attackVectorCategoryServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaAttackVectorCategory> getAll() {
+        return attackVectorCategoryServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaAttackVectorCategory> getById(Long id) {
+        return attackVectorCategoryServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    }
+
+    @Override
+    public JpaAttackVectorCategory update(Long id, JpaAttackVectorCategory entity) {
+        Optional<JpaAttackVectorCategory> optionalEntity = attackVectorCategoryServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+        if (optionalEntity.isPresent()) {
+            JpaAttackVectorCategory existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return attackVectorCategoryServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (attackVectorCategoryServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            attackVectorCategoryServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//CrudService.java
+==============================
+package orsk.compli.service.jpa;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface CrudService<T, ID> {
+    T create(T t);
+
+    List<T> getAll();
+
+    Optional<T> getById(ID id);
+
+    T update(ID id, T t);
+
+    boolean delete(ID id);
+}
+
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//ThreatActorJpaService.java
+==============================
+package orsk.compli.service.jpa;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import orsk.compli.entities.jpa.ThreatActor;
+import orsk.compli.repository.jpa.ThreatActorJpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service("jpaThreatActorService")
+public class ThreatActorJpaService implements CrudService<JpaThreatActor, Long> {
+
+    private final ThreatActorJpaRepository threatActorServiceRepository;
+
+    @Autowired
+    public ThreatActorJpaService(ThreatActorJpaRepository threatActorServiceRepository) {
+        this.threatActorServiceRepository = threatActorServiceRepository;
+    }
+
+    @Override
+    public JpaThreatActor create(JpaThreatActor entity) {
+        return threatActorServiceRepository.save(entity);
+    }
+
+    @Override
+    public List<JpaThreatActor> getAll() {
+        return threatActorServiceRepository.findAll();
+    }
+
+    @Override
+    public Optional<JpaThreatActor> getById(Long id) {
+        return threatActorServiceRepository.findById(id);
+    }
+
+    @Override
+    public JpaThreatActor update(Long id, JpaThreatActor entity) {
+        Optional<JpaThreatActor> optionalEntity = threatActorServiceRepository.findById(id);
+        if (optionalEntity.isPresent()) {
+            JpaThreatActor existingEntity = optionalEntity.get();
+            // TODO: Update fields of existingEntity with values from entity
+            return threatActorServiceRepository.save(existingEntity);
+        } else {
+            throw new RuntimeException("Entity not found with id " + id);
+        }
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (threatActorServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
+            threatActorServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+            return true;
+        }
+        return false;
+    }
+}
+
+
+

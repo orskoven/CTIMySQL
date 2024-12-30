@@ -4,13 +4,13 @@ package orsk.compli.controller.jpa;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import orsk.compli.entities.jpa.JpaAffectedProduct;
+import orsk.compli.entities.AffectedProduct;
 import orsk.compli.service.jpa.AffectedProductJpaService;
 import orsk.compli.service.jpa.CrudService;
 
 @RestController("jpaAffectedProductController")
 @RequestMapping("/api/mysql/affected-products")
-public class AffectedProductControllerJpaJpa extends AbstractCrudControllerJpa<JpaAffectedProduct, Long> { // Changed ID type to Integer
+public class AffectedProductControllerJpaJpa extends AbstractCrudControllerJpa<AffectedProduct, Long> { // Changed ID type to Integer
 
     private final AffectedProductJpaService affectedProductService;
 
@@ -19,7 +19,7 @@ public class AffectedProductControllerJpaJpa extends AbstractCrudControllerJpa<J
     }
 
     @Override
-    protected CrudService<JpaAffectedProduct, Long> getService() {
+    protected CrudService<AffectedProduct, Long> getService() {
         return affectedProductService;
     }
 }

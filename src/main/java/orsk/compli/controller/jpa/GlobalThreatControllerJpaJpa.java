@@ -3,16 +3,15 @@ package orsk.compli.controller.jpa;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import orsk.compli.entities.jpa.JpaGlobalThreat;
+import orsk.compli.entities.GlobalThreat;
 import orsk.compli.service.jpa.CrudService;
 import orsk.compli.service.jpa.GlobalThreatJpaService;
 
 @RestController("jpaGlobalThreatController")
 @RequestMapping("/api/mysql/global-threats")
-@CrossOrigin(origins = "https://blue-river-05c43af0f.5.azurestaticapps.net")
 
 
-public class GlobalThreatControllerJpaJpa extends AbstractCrudControllerJpa<JpaGlobalThreat, Long> {
+public class GlobalThreatControllerJpaJpa extends AbstractCrudControllerJpa<GlobalThreat, Long> {
 
     private final GlobalThreatJpaService globalThreatService;
 
@@ -21,7 +20,7 @@ public class GlobalThreatControllerJpaJpa extends AbstractCrudControllerJpa<JpaG
     }
 
     @Override
-    protected CrudService<JpaGlobalThreat, Long> getService() {
+    protected CrudService<GlobalThreat, Long> getService() {
         return globalThreatService;
     }
 

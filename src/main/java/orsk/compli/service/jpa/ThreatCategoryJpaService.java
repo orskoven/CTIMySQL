@@ -1,56 +1,78 @@
+
 package orsk.compli.service.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import orsk.compli.entities.jpa.JpaThreatCategory;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.ThreatCategory;
+import orsk.compli.exception.EntityNotFoundException;
 import orsk.compli.repository.jpa.ThreatCategoryJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("jpaThreatCategoryService")
-public class ThreatCategoryJpaService implements CrudService<JpaThreatCategory, Long> {
+public class ThreatCategoryJpaService implements CrudService<ThreatCategory, Long> {
 
-    private final ThreatCategoryJpaRepository threatCategoryServiceRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThreatCategoryJpaService.class);
+
+    private final ThreatCategoryJpaRepository threatCategoryRepository;
 
     @Autowired
-    public ThreatCategoryJpaService(ThreatCategoryJpaRepository threatCategoryServiceRepository) {
-        this.threatCategoryServiceRepository = threatCategoryServiceRepository;
+    public ThreatCategoryJpaService(ThreatCategoryJpaRepository threatCategoryRepository) {
+        this.threatCategoryRepository = threatCategoryRepository;
     }
 
     @Override
-    public JpaThreatCategory create(JpaThreatCategory entity) {
-        return threatCategoryServiceRepository.save(entity);
+    @Transactional
+    public ThreatCategory create(ThreatCategory entity) {
+        LOGGER.info("Creating Threat Category: {}", entity);
+        return threatCategoryRepository.save(entity);
     }
 
     @Override
-    public List<JpaThreatCategory> getAll() {
-        return threatCategoryServiceRepository.findAll();
+    public List<ThreatCategory> createBatch(List<ThreatCategory> entities) {
+        return List.of();
     }
 
     @Override
-    public Optional<JpaThreatCategory> getById(Long id) {
-        return threatCategoryServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    public List<ThreatCategory> getAll() {
+        LOGGER.info("Retrieving all Threat Categories");
+        return threatCategoryRepository.findAll();
     }
 
     @Override
-    public JpaThreatCategory update(Long id, JpaThreatCategory entity) {
-        Optional<JpaThreatCategory> optionalEntity = threatCategoryServiceRepository.findById(Long.valueOf(String.valueOf(id)));
-        if (optionalEntity.isPresent()) {
-            JpaThreatCategory existingEntity = optionalEntity.get();
-            // TODO: Update fields of existingEntity with values from entity
-            return threatCategoryServiceRepository.save(existingEntity);
-        } else {
-            throw new RuntimeException("Entity not found with id " + id);
-        }
+    public Optional<ThreatCategory> getById(Long id) {
+        LOGGER.info("Retrieving Threat Category with ID: {}", id);
+        return threatCategoryRepository.findById(id);
     }
 
     @Override
+    @Transactional
+    public ThreatCategory update(Long id, ThreatCategory entity) {
+        LOGGER.info("Updating Threat Category with ID: {}", id);
+        return threatCategoryRepository.findById(id)
+                .map(existing -> {
+                    existing.setCategoryName(entity.getCategoryName());
+                    existing.setDescription(entity.getDescription());
+                    // Add other field mappings as necessary
+                    return threatCategoryRepository.save(existing);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Threat Category not found with id " + id));
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
-        if (threatCategoryServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
-            threatCategoryServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+        LOGGER.info("Deleting Threat Category with ID: {}", id);
+        if (threatCategoryRepository.existsById(id)) {
+            threatCategoryRepository.deleteById(id);
             return true;
         }
+        LOGGER.warn("Threat Category with ID: {} not found for deletion", id);
         return false;
     }
 }
+

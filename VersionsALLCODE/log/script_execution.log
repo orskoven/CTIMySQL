@@ -1,0 +1,18 @@
+2024-12-30 22:43:04 - Script execution started.
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//VulnerabilityJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//CountryJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//GlobalThreatJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//ThreatActorTypeJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AuthClientService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//GeolocationJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AttackVectorJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AbstractGenericService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AffectedProductJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//ThreatCategoryJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//RefreshTokenJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//SearchService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//AttackVectorCategoryJpaService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//CrudService.java
+2024-12-30 22:43:04 - Processed file: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/src/main/java/orsk/compli/service/jpa//ThreatActorJpaService.java
+2024-12-30 22:43:04 - Total Java files processed: 0
+2024-12-30 22:43:04 - Script execution completed successfully. Output saved to /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/CTIMySQLFINAL/VersionsALLCODE/code/VERSION18thdecmeberMAIN_APPLICATION_CODE_ALL_java_code.txt.

@@ -1,0 +1,360 @@
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/authmoduleV/src/main/java/orsk/authmodule/service//UserService.java
+==============================
+package orsk.authmodule.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import orsk.authmodule.model.Role;
+import orsk.authmodule.model.User;
+import orsk.authmodule.repository.RoleRepository;
+import orsk.authmodule.repository.UserRepository;
+
+
+import java.util.Collections;
+
+@Service("UserService")
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User registerNewUser(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(false); // User needs to be enabled after registration or email verification
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found"));
+        user.setRoles(Collections.singleton(userRole));
+        return userRepository.save(user);
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/authmoduleV/src/main/java/orsk/authmodule/service//AuthService.java
+==============================
+package orsk.authmodule.service;
+
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import orsk.authmodule.dto.*;
+import orsk.authmodule.exceptions.EmailNotFoundException;
+import orsk.authmodule.exceptions.InvalidTokenException;
+import orsk.authmodule.exceptions.UserAlreadyExistsException;
+import orsk.authmodule.model.*;
+import orsk.authmodule.repository.PasswordResetTokenRepository;
+import orsk.authmodule.repository.RoleRepository;
+import orsk.authmodule.repository.UserRepository;
+import orsk.authmodule.repository.VerificationTokenRepository;
+import orsk.authmodule.security.JwtTokenProvider;
+
+import java.time.Instant;
+import java.util.Set;
+import java.util.UUID;
+
+@Service("AuthService")
+@Validated
+public class AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    // Token expiry configuration
+    private static final long VERIFICATION_TOKEN_EXPIRY = 86400L; // 24 hours
+    private static final long PASSWORD_RESET_TOKEN_EXPIRY = 3600L; // 1 hour
+
+    @Transactional
+    public void registerUser(@Valid RegistrationRequest registrationRequest) {
+        if (userRepository.existsByUsernameOrEmail(registrationRequest.getUsername(), registrationRequest.getEmail())) {
+            throw new UserAlreadyExistsException("Username or email already exists");
+        }
+
+        User user = new User();
+        user.setUsername(registrationRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        user.setEmail(registrationRequest.getEmail());
+        user.setConsentToDataUsage(registrationRequest.getConsentToDataUsage());
+        user.setEnabled(false); // User must verify email
+
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found"));
+        user.setRoles(Set.of(userRole));
+
+        userRepository.save(user);
+
+        String token = generateVerificationToken(user);
+        logger.info("Verification token generated for user {}: {}", user.getUsername(), token);
+
+        // Placeholder for email service integration
+        // emailService.sendVerificationEmail(user.getEmail(), token);
+    }
+
+    @Transactional
+    public JwtAuthenticationResponse authenticateUser(@Valid LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
+
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new BadCredentialsException("Invalid email or password");
+            }
+
+            String jwt = tokenProvider.generateToken(authentication);
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(authentication.getName());
+
+            return new JwtAuthenticationResponse(jwt, refreshToken.getToken());
+        } catch (BadCredentialsException e) {
+            logger.error("Authentication failed for email {}: {}", loginRequest.getEmail(), e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error during authentication for email {}: {}", loginRequest.getEmail(), e.getMessage());
+            throw new RuntimeException("Authentication failed due to an unexpected error", e);
+        }
+    }
+
+    @Transactional
+    public JwtAuthenticationResponse refreshToken(@Valid TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = tokenProvider.generateTokenFromUsername(user.getUsername());
+                    logger.info("Refresh token used for user {}", user.getUsername());
+                    return new JwtAuthenticationResponse(token, requestRefreshToken);
+                })
+                .orElseThrow(() -> new InvalidTokenException("Refresh token not found"));
+    }
+
+    @Transactional
+    public void logoutUser(@Valid LogoutRequest logoutRequest) {
+        refreshTokenService.deleteByToken(logoutRequest.getRefreshToken());
+        logger.info("User logged out with refresh token {}", logoutRequest.getRefreshToken());
+    }
+
+    @Transactional
+    public void initiatePasswordReset(@Valid PasswordResetRequest passwordResetRequest) {
+        User user = userRepository.findByEmail(passwordResetRequest.getEmail())
+                .orElseThrow(() -> new EmailNotFoundException("Email not found"));
+
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+        passwordResetToken.setToken(token);
+        passwordResetToken.setUser(user);
+        passwordResetToken.setExpiryDate(Instant.now().plusSeconds(PASSWORD_RESET_TOKEN_EXPIRY));
+
+        passwordResetTokenRepository.save(passwordResetToken);
+
+        logger.info("Password reset token generated for user {}: {}", user.getUsername(), token);
+        // Placeholder for email service integration
+        // emailService.sendPasswordResetEmail(user.getEmail(), token);
+    }
+
+    @Transactional
+    public void verifyEmail(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new InvalidTokenException("Invalid verification token"));
+
+        User user = verificationToken.getUser();
+        user.setEnabled(true);
+
+        userRepository.save(user);
+        verificationTokenRepository.delete(verificationToken);
+
+        logger.info("User {} email verified successfully", user.getUsername());
+    }
+
+    private String generateVerificationToken(User user) {
+        String token = UUID.randomUUID().toString();
+
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(token);
+        verificationToken.setUser(user);
+        verificationToken.setExpiryDate(Instant.now().plusSeconds(VERIFICATION_TOKEN_EXPIRY));
+
+        verificationTokenRepository.save(verificationToken);
+        return token;
+    }
+
+    @Transactional
+    public void changePassword(@Valid PasswordChangeRequest passwordChangeRequest) {
+        String token = passwordChangeRequest.getToken();
+
+        User user = (User) userRepository.findByPasswordResetToken(token)
+                .orElseThrow(() -> new InvalidTokenException("Invalid password reset token"));
+
+        // Validate token expiration
+        if (user.getPasswordResetTokenExpiry().isBefore(Instant.now())) {
+            throw new InvalidTokenException("Password reset token expired");
+        }
+
+        // Update the password
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+        user.setPasswordResetToken(null); // Clear the token after use
+        user.setPasswordResetTokenExpiry(null); // Clear expiry
+
+        userRepository.save(user);
+        logger.info("Password successfully changed for user {}", user.getUsername());
+    }
+}
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/authmoduleV/src/main/java/orsk/authmodule/service//RefreshTokenService.java
+==============================
+package orsk.authmodule.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.authmodule.model.RefreshToken;
+import orsk.authmodule.model.User;
+import orsk.authmodule.repository.RefreshTokenRepository;
+import orsk.authmodule.repository.UserRepository;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+@Service("RefreshTokenService")
+public class RefreshTokenService {
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
+    }
+
+    public RefreshToken createRefreshToken(String username) {
+        RefreshToken refreshToken = new RefreshToken();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        refreshToken.setUser(user);
+        refreshToken.setExpiryDate(Instant.now().plusSeconds(604800)); // 7 days
+        refreshToken.setToken(UUID.randomUUID().toString());
+
+        return refreshTokenRepository.save(refreshToken);
+    }
+
+    public RefreshToken verifyExpiration(RefreshToken token) {
+        if (token.getExpiryDate().isBefore(Instant.now())) {
+            refreshTokenRepository.delete(token);
+            throw new RuntimeException("Refresh token expired");
+        }
+
+        return token;
+    }
+
+    @Transactional
+    public int deleteByUserId(Long userId) {
+        return refreshTokenRepository.deleteByUser(userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found")));
+    }
+
+    @Transactional
+    public void deleteByToken(String token) {
+        refreshTokenRepository.findByToken(token).ifPresent(refreshTokenRepository::delete);
+    }
+}
+
+
+
+==============================
+File: /Users/simonbeckmann/IdeaProjects/CyberDashboar/src/authmoduleV/src/main/java/orsk/authmodule/service//CustomUserDetailsService.java
+==============================
+package orsk.authmodule.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import orsk.authmodule.model.User;
+import orsk.authmodule.repository.UserRepository;
+
+import java.util.stream.Collectors;
+
+@Service("CustomUserDetailsService")
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(usernameOrEmail)
+                .or(() -> userRepository.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                user.getEnabled(),
+                true,
+                true,
+                true,
+                user.getRoles().stream()
+                        .flatMap(role -> role.getPrivileges().stream())
+                        .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
+                        .collect(Collectors.toList()));
+    }
+
+}
+
+
+

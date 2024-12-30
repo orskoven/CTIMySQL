@@ -1,56 +1,80 @@
+
 package orsk.compli.service.jpa;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import orsk.compli.entities.jpa.JpaAffectedProduct;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.AffectedProduct;
 import orsk.compli.repository.jpa.AffectedProductJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("jpaAffectedProductService")
-public class AffectedProductJpaService implements CrudService<JpaAffectedProduct, Long> {
+public class AffectedProductJpaService extends AbstractGenericService<AffectedProduct, String>{
 
-    private final AffectedProductJpaRepository affectedProductServiceRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AffectedProductJpaService.class);
+
+    private final AffectedProductJpaRepository affectedProductRepository;
 
     @Autowired
-    public AffectedProductJpaService(AffectedProductJpaRepository affectedProductServiceRepository) {
-        this.affectedProductServiceRepository = affectedProductServiceRepository;
+    public AffectedProductJpaService(AffectedProductJpaRepository affectedProductRepository) {
+        this.affectedProductRepository = affectedProductRepository;
     }
 
     @Override
-    public JpaAffectedProduct create(JpaAffectedProduct entity) {
-        return affectedProductServiceRepository.save(entity);
+    @Transactional
+    public AffectedProduct create(AffectedProduct entity) {
+        LOGGER.info("Creating Affected Product: {}", entity);
+        return affectedProductRepository.save(entity);
     }
 
     @Override
-    public List<JpaAffectedProduct> getAll() {
-        return affectedProductServiceRepository.findAll();
+    public List<AffectedProduct> createBatch(List<AffectedProduct> entities) {
+        return List.of();
     }
 
     @Override
-    public Optional<JpaAffectedProduct> getById(Long id) {
-        return affectedProductServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    public List<AffectedProduct> getAll() {
+        LOGGER.info("Retrieving all Affected Products");
+        return affectedProductRepository.findAll();
     }
 
     @Override
-    public JpaAffectedProduct update(Long id, JpaAffectedProduct entity) {
-        Optional<JpaAffectedProduct> optionalEntity = affectedProductServiceRepository.findById(Long.valueOf(String.valueOf(id)));
-        if (optionalEntity.isPresent()) {
-            JpaAffectedProduct existingEntity = optionalEntity.get();
-            // TODO: Update fields of existingEntity with values from entity
-            return affectedProductServiceRepository.save(existingEntity);
-        } else {
-            throw new RuntimeException("Entity not found with id " + id);
-        }
+    public Optional<AffectedProduct> getById(Long id) {
+        LOGGER.info("Retrieving Affected Product with ID: {}", id);
+        return affectedProductRepository.findById(id);
     }
 
     @Override
+    @Transactional
+    public AffectedProduct update(Long id, AffectedProduct entity) {
+        LOGGER.info("Updating Affected Product with ID: {}", id);
+        return affectedProductRepository.findById(id)
+                .map(existing -> {
+                    existing.setProductName(entity.getProductName());
+                    existing.setVendor(entity.getVendor());
+                    existing.setVersion(entity.getVersion());
+                    // Add other field mappings as necessary
+                    return affectedProductRepository.save(existing);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Affected Product not found with id " + id));
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
-        if (affectedProductServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
-            affectedProductServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+        LOGGER.info("Deleting Affected Product with ID: {}", id);
+        if (affectedProductRepository.existsById(id)) {
+            affectedProductRepository.deleteById(id);
             return true;
         }
+        LOGGER.warn("Affected Product with ID: {} not found for deletion", id);
         return false;
     }
+
 }
+

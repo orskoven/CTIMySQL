@@ -1,56 +1,79 @@
+
 package orsk.compli.service.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import orsk.compli.entities.jpa.JpaGeolocation;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.Geolocation;
+import orsk.compli.exception.EntityNotFoundException;
 import orsk.compli.repository.jpa.GeolocationJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("jpaGeolocationService")
-public class GeolocationJpaService implements CrudService<JpaGeolocation, Long> {
+public class GeolocationJpaService implements CrudService<Geolocation, Long> {
 
-    private final GeolocationJpaRepository geolocationServiceRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GeolocationJpaService.class);
+
+    private final GeolocationJpaRepository geolocationRepository;
 
     @Autowired
-    public GeolocationJpaService(GeolocationJpaRepository geolocationServiceRepository) {
-        this.geolocationServiceRepository = geolocationServiceRepository;
+    public GeolocationJpaService(GeolocationJpaRepository geolocationRepository) {
+        this.geolocationRepository = geolocationRepository;
     }
 
     @Override
-    public JpaGeolocation create(JpaGeolocation entity) {
-        return geolocationServiceRepository.save(entity);
+    @Transactional
+    public Geolocation create(Geolocation entity) {
+        LOGGER.info("Creating Geolocation: {}", entity);
+        return geolocationRepository.save(entity);
     }
 
     @Override
-    public List<JpaGeolocation> getAll() {
-        return geolocationServiceRepository.findAll();
+    public List<Geolocation> createBatch(List<Geolocation> entities) {
+        return List.of();
     }
 
     @Override
-    public Optional<JpaGeolocation> getById(Long id) {
-        return geolocationServiceRepository.findById(Long.valueOf(String.valueOf(id)));
+    public List<Geolocation> getAll() {
+        LOGGER.info("Retrieving all Geolocations");
+        return geolocationRepository.findAll();
     }
 
     @Override
-    public JpaGeolocation update(Long id, JpaGeolocation entity) {
-        Optional<JpaGeolocation> optionalEntity = geolocationServiceRepository.findById(Long.valueOf(String.valueOf(id)));
-        if (optionalEntity.isPresent()) {
-            JpaGeolocation existingEntity = optionalEntity.get();
-            // TODO: Update fields of existingEntity with values from entity
-            return geolocationServiceRepository.save(existingEntity);
-        } else {
-            throw new RuntimeException("Entity not found with id " + id);
-        }
+    public Optional<Geolocation> getById(Long id) {
+        LOGGER.info("Retrieving Geolocation with ID: {}", id);
+        return geolocationRepository.findById(id);
     }
 
     @Override
+    @Transactional
+    public Geolocation update(Long id, Geolocation entity) {
+        LOGGER.info("Updating Geolocation with ID: {}", id);
+        return geolocationRepository.findById(id)
+                .map(existing -> {
+                    existing.setLatitude(entity.getLatitude());
+                    existing.setLongitude(entity.getLongitude());
+                    existing.setCountry(entity.getCountry());
+                    // Add other field mappings as necessary
+                    return geolocationRepository.save(existing);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Geolocation not found with id " + id));
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
-        if (geolocationServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
-            geolocationServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+        LOGGER.info("Deleting Geolocation with ID: {}", id);
+        if (geolocationRepository.existsById(id)) {
+            geolocationRepository.deleteById(id);
             return true;
         }
+        LOGGER.warn("Geolocation with ID: {} not found for deletion", id);
         return false;
     }
 }
+

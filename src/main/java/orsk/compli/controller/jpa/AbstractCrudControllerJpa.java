@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import orsk.compli.service.jpa.CrudService;
@@ -18,7 +19,7 @@ public abstract class AbstractCrudControllerJpa<T, ID> {
     /**
      * Factory method to provide the appropriate service for each controller subclass.
      *
-     * @return CrudMongoService instance for the entity type
+     * @return CrudService instance for the entity type
      */
     protected abstract CrudService<T, ID> getService();
 
@@ -36,6 +37,23 @@ public abstract class AbstractCrudControllerJpa<T, ID> {
         } catch (DataAccessException e) {
             logger.error("Error creating entity: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating entity");
+        }
+    }
+
+    /**
+     * Creates multiple entities in a batch.
+     *
+     * @param entities The list of entities to create
+     * @return List of created entities wrapped in ResponseEntity
+     */
+    @PostMapping("/batch")
+    public ResponseEntity<List<T>> createBatch(@RequestBody List<T> entities) {
+        try {
+            List<T> createdEntities = getService().createBatch(entities);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEntities);
+        } catch (DataAccessException e) {
+            logger.error("Error creating batch of entities: {}", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating batch of entities");
         }
     }
 

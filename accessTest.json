@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "username": "adminUser",
+      "password": "@Password123",
+      "email": "admin@example.com",
+      "role": "ROLE_ADMIN",
+      "enabled": true,
+      "consentToDataUsage": true
+    },
+    {
+      "username": "regularUser",
+      "password": "@Password123",
+      "email": "user@example.com",
+      "role": "ROLE_USER",
+      "enabled": true,
+      "consentToDataUsage": true
+    },
+    {
+      "username": "moderatorUser",
+      "password": "@Password123",
+      "email": "moderator@example.com",
+      "role": "ROLE_MODERATOR",
+      "enabled": true,
+      "consentToDataUsage": true
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  spring_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql_db:3306/cyberThreatIntel
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=securepassword123!
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET=24130304f884367d69d55cab1e72b1b5053d5a193334b4263529320122c8d782eae39abb44d423fc4e8fddca09e11dbd09e0ee0dfbddf04eef8f2ca55429cfe3
+
+
+    depends_on:
+      mysql_db:
+        condition: service_healthy
+    secrets:
+      - db_password
+    security_opt:
+      - no-new-privileges:true
+    env_file:
+      - .env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - spring_app
+    networks:
+      - app_network
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+
+  mysql_db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_DATABASE: cyberThreatIntel
+    ports:
+      - "3312:3306"
+    networks:
+      - app_network
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    secrets:
+      - db_password
+    tmpfs:
+      - /tmp
+      - /var/lib/mysql
+
+networks:
+  app_network:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt

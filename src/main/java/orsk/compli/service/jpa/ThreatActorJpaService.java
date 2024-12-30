@@ -1,56 +1,79 @@
+
 package orsk.compli.service.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import orsk.compli.entities.jpa.JpaThreatActor;
+import org.springframework.transaction.annotation.Transactional;
+import orsk.compli.entities.ThreatActor;
+import orsk.compli.exception.EntityNotFoundException;
 import orsk.compli.repository.jpa.ThreatActorJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service("jpaThreatActorService")
-public class ThreatActorJpaService implements CrudService<JpaThreatActor, Long> {
+public class ThreatActorJpaService implements CrudService<ThreatActor, Long> {
 
-    private final ThreatActorJpaRepository threatActorServiceRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThreatActorJpaService.class);
+
+    private final ThreatActorJpaRepository threatActorRepository;
 
     @Autowired
-    public ThreatActorJpaService(ThreatActorJpaRepository threatActorServiceRepository) {
-        this.threatActorServiceRepository = threatActorServiceRepository;
+    public ThreatActorJpaService(ThreatActorJpaRepository threatActorRepository) {
+        this.threatActorRepository = threatActorRepository;
     }
 
     @Override
-    public JpaThreatActor create(JpaThreatActor entity) {
-        return threatActorServiceRepository.save(entity);
+    @Transactional
+    public ThreatActor create(ThreatActor entity) {
+        LOGGER.info("Creating Threat Actor: {}", entity);
+        return threatActorRepository.save(entity);
     }
 
     @Override
-    public List<JpaThreatActor> getAll() {
-        return threatActorServiceRepository.findAll();
+    public List<ThreatActor> createBatch(List<ThreatActor> entities) {
+        return List.of();
     }
 
     @Override
-    public Optional<JpaThreatActor> getById(Long id) {
-        return threatActorServiceRepository.findById(id);
+    public List<ThreatActor> getAll() {
+        LOGGER.info("Retrieving all Threat Actors");
+        return threatActorRepository.findAll();
     }
 
     @Override
-    public JpaThreatActor update(Long id, JpaThreatActor entity) {
-        Optional<JpaThreatActor> optionalEntity = threatActorServiceRepository.findById(id);
-        if (optionalEntity.isPresent()) {
-            JpaThreatActor existingEntity = optionalEntity.get();
-            // TODO: Update fields of existingEntity with values from entity
-            return threatActorServiceRepository.save(existingEntity);
-        } else {
-            throw new RuntimeException("Entity not found with id " + id);
-        }
+    public Optional<ThreatActor> getById(Long id) {
+        LOGGER.info("Retrieving Threat Actor with ID: {}", id);
+        return threatActorRepository.findById(id);
     }
 
     @Override
+    @Transactional
+    public ThreatActor update(Long id, ThreatActor entity) {
+        LOGGER.info("Updating Threat Actor with ID: {}", id);
+        return threatActorRepository.findById(id)
+                .map(existing -> {
+                    existing.setActorName(entity.getActorName());
+                    existing.setMotivation(entity.getMotivation());
+                    existing.setCapabilities(entity.getCapabilities());
+                    // Add other field mappings as necessary
+                    return threatActorRepository.save(existing);
+                })
+                .orElseThrow(() -> new EntityNotFoundException("Threat Actor not found with id " + id));
+    }
+
+    @Override
+    @Transactional
     public boolean delete(Long id) {
-        if (threatActorServiceRepository.existsById(Long.valueOf(String.valueOf(id)))) {
-            threatActorServiceRepository.deleteById(Long.valueOf(String.valueOf(id)));
+        LOGGER.info("Deleting Threat Actor with ID: {}", id);
+        if (threatActorRepository.existsById(id)) {
+            threatActorRepository.deleteById(id);
             return true;
         }
+        LOGGER.warn("Threat Actor with ID: {} not found for deletion", id);
         return false;
     }
 }
+
